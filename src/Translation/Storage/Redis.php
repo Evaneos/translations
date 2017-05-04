@@ -2,6 +2,8 @@
 
 class Translation_Storage_Redis extends Translation_Storage_Abstract implements Translation_Storage_Interface
 {
+    const RES_SUCCESS = 'OK';
+
     protected $redisInstance = null;
     protected $host = null;
     protected $port = null;
@@ -56,8 +58,7 @@ class Translation_Storage_Redis extends Translation_Storage_Abstract implements 
     {
         $this->init();
         $redisKey = $this->makeKey($key, $lang);
-        $md5Key = md5($redisKey);
-        $res = $this->redisInstance->get($md5Key);
+        $res = $this->redisInstance->get($redisKey);
         return $res;
     }
 
@@ -76,18 +77,22 @@ class Translation_Storage_Redis extends Translation_Storage_Abstract implements 
     {
         $this->init();
         $redisKey = $this->makeKey($key, $lang);
-        $md5Key = md5($redisKey);
-        $set = $this->redisInstance->set($md5Key, $value);
+        $set = $this->redisInstance->set($redisKey, $value);
 
-        if ($set === 'OK') {
+        if ($set === self::RES_SUCCESS) {
             return true;
         }
         return false;
     }
 
+    public function deleteAll()
+    {
+        $this->redisInstance->flushAll();
+    }
+
     public function deleteKeys($keys)
     {
-        // Todo : to be implemented
+        $this->redisInstance->del($keys);
     }
 
     public function invert($value, $lang)
