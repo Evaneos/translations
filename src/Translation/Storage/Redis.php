@@ -2,7 +2,7 @@
 
 class Translation_Storage_Redis extends Translation_Storage_Abstract implements Translation_Storage_Interface
 {
-    const RES_SUCCESS = 'OK';
+    const RES_SUCCESS = true;
 
     protected $redisInstance = null;
     protected $host = null;
